@@ -1,0 +1,2828 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contest Transfer Coach: 4–6 Calls/Hr Field Weapon</title>
+  <style>
+    /* =========================================================================
+       DESIGN TOKENS & MOBILE-FIRST RESET (ZERO EXTERNAL LIBRARIES OR CDNS)
+       ========================================================================= */
+    :root {
+      --navy: #0F172A;
+      --navy-mid: #1E293B;
+      --navy-soft: #334155;
+      --orange: #EA580C;
+      --orange-dark: #C2410C;
+      --orange-tint: #FFF7ED;
+      --orange-border: #FDBA74;
+      --red: #DC2626;
+      --red-dark: #991B1B;
+      --red-tint: #FEF2F2;
+      --red-border: #FCA5A5;
+      --green: #16A34A;
+      --green-dark: #15803D;
+      --green-tint: #F0FDF4;
+      --green-border: #86EFAC;
+      --gold-bg: #FEF3C7;
+      --gold-border: #F59E0B;
+      --gold-text: #78350F;
+      --blue-tint: #EFF6FF;
+      --blue-border: #93C5FD;
+      --blue-text: #1E3A8A;
+      --white: #FFFFFF;
+      --bg: #F8FAFC;
+      --slate-100: #F1F5F9;
+      --slate-200: #E2E8F0;
+      --slate-300: #CBD5E1;
+      --slate-600: #475569;
+      --slate-700: #334155;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+      --shadow-md: 0 4px 14px rgba(15, 23, 42, 0.16);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--navy);
+      font-size: 16px;
+      line-height: 1.48;
+      -webkit-tap-highlight-color: transparent;
+      overflow-x: hidden;
+    }
+
+    button, input {
+      font-family: inherit;
+    }
+
+    /* Minimum 48px thumb-friendly touch target across all interactive buttons */
+    button {
+      min-height: 48px;
+      cursor: pointer;
+      border: none;
+      border-radius: var(--radius-md);
+      font-weight: 800;
+      transition: transform 0.1s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @keyframes pulseRedAlert {
+      0%, 100% {
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.72);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 8px rgba(220, 38, 38, 0);
+        transform: scale(1.01);
+      }
+    }
+
+    .flash-red-alert {
+      animation: pulseRedAlert 1.4s infinite;
+    }
+
+    /* =========================================================================
+       PERSISTENT STICKY TOP HEADER & 4-TAB NAVIGATION
+       ========================================================================= */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: var(--navy);
+      color: var(--white);
+      box-shadow: var(--shadow-md);
+      border-bottom: 3px solid var(--orange);
+    }
+
+    .header-inner {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 10px 12px 12px;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+      flex: 1 1 240px;
+    }
+
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background-color: var(--orange);
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.18;
+      color: var(--white);
+    }
+
+    .target-badge {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background-color: var(--green);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+    }
+
+    .transfer-pill-btn {
+      background-color: var(--navy-mid);
+      color: var(--white);
+      border: 2px solid var(--green);
+      padding: 8px 13px;
+      font-size: 14px;
+      font-weight: 900;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+      box-shadow: 0 2px 8px rgba(22, 163, 74, 0.35);
+    }
+
+    .transfer-pill-btn.elite {
+      background-color: var(--gold-bg);
+      color: var(--gold-text);
+      border-color: var(--gold-border);
+    }
+
+    .nav-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+
+    @media (min-width: 620px) {
+      .nav-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      .brand-title {
+        font-size: 17px;
+      }
+    }
+
+    .nav-tab {
+      background-color: var(--navy-mid);
+      color: #E2E8F0;
+      border: 2px solid #334155;
+      padding: 8px 6px;
+      font-size: 13px;
+      line-height: 1.2;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-tab.active {
+      background-color: var(--orange);
+      color: var(--white);
+      border-color: #FED7AA;
+      box-shadow: 0 2px 8px rgba(234, 88, 12, 0.45);
+    }
+
+    /* =========================================================================
+       LAYOUT CONTAINER, CARDS & BADGES
+       ========================================================================= */
+    .main-container {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 16px 12px 84px;
+    }
+
+    .section-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--slate-200);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-navy { border-color: var(--navy); }
+    .card-orange { border-color: var(--orange); }
+    .card-red { border-color: var(--red); }
+    .card-green { border-color: var(--green); }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .badge-orange { background-color: var(--orange); color: var(--white); }
+    .badge-navy { background-color: var(--navy); color: var(--white); }
+    .badge-red { background-color: var(--red); color: var(--white); }
+    .badge-green { background-color: var(--green); color: var(--white); }
+    .badge-amber { background-color: #FEF3C7; color: #92400E; border: 1px solid #F59E0B; }
+    .badge-blue { background-color: #DBEAFE; color: #1E3A8A; border: 1px solid #60A5FA; }
+
+    /* =========================================================================
+       TAB 1: WALK & TALK SCRIPT TELEPROMPTER
+       ========================================================================= */
+    .zero-friction-banner {
+      background-color: var(--red);
+      color: var(--white);
+      border: 3px solid #7F1D1D;
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.44;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .personalizer-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 600px) {
+      .personalizer-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .field-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      color: var(--navy-soft);
+      margin-bottom: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .text-input {
+      width: 100%;
+      min-height: 48px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--slate-300);
+      background-color: var(--bg);
+      color: var(--navy);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .text-input:focus {
+      outline: none;
+      border-color: var(--orange);
+      background-color: var(--white);
+    }
+
+    .mode-switch-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .mode-btn {
+      background-color: var(--white);
+      color: var(--navy);
+      border: 2px solid var(--slate-300);
+      font-size: 14px;
+      padding: 10px;
+    }
+
+    .mode-btn.active {
+      background-color: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    .step-dots {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .step-dot-btn {
+      min-height: 48px;
+      padding: 6px 4px;
+      font-size: 13px;
+      font-weight: 900;
+      background-color: var(--slate-200);
+      color: var(--navy);
+      border: 2px solid transparent;
+    }
+
+    .step-dot-btn.active {
+      background-color: var(--orange);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    .action-cue-box {
+      background-color: var(--gold-bg);
+      border: 2px solid var(--gold-border);
+      color: var(--gold-text);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .script-speech-box {
+      background-color: var(--bg);
+      border-left: 5px solid var(--orange);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.52;
+      margin-bottom: 12px;
+    }
+
+    .focus-speech {
+      font-size: 19px;
+      line-height: 1.54;
+    }
+
+    .handoff-subbox {
+      background-color: var(--white);
+      border: 2px solid var(--slate-300);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 10px;
+    }
+
+    .handoff-subbox.customer-box {
+      background-color: var(--green-tint);
+      border-color: var(--green);
+    }
+
+    .name-token {
+      background-color: #FFEDD5;
+      color: var(--orange-dark);
+      padding: 1px 6px;
+      border-radius: 5px;
+      border: 1px solid var(--orange-border);
+    }
+
+    .branch-toggle-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 10px 0 12px;
+    }
+
+    .branch-btn {
+      background-color: var(--white);
+      color: var(--navy);
+      border: 2px solid var(--slate-300);
+      font-size: 15px;
+      padding: 10px 8px;
+    }
+
+    .branch-btn.active-home {
+      background-color: var(--green);
+      color: var(--white);
+      border-color: var(--green-dark);
+    }
+
+    .branch-btn.active-rent {
+      background-color: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    .branch-response {
+      border-radius: var(--radius-md);
+      padding: 14px;
+      font-size: 17px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      line-height: 1.48;
+    }
+
+    .branch-response.home {
+      background-color: var(--green-tint);
+      border: 2px solid var(--green);
+      color: #14532D;
+    }
+
+    .branch-response.rent {
+      background-color: var(--blue-tint);
+      border: 2px solid #2563EB;
+      color: var(--blue-text);
+    }
+
+    .escalate-btn {
+      width: 100%;
+      min-height: 56px;
+      background-color: var(--orange);
+      color: var(--white);
+      font-size: 16px;
+      font-weight: 900;
+      padding: 14px 16px;
+      box-shadow: 0 4px 10px rgba(234, 88, 12, 0.35);
+    }
+
+    .escalate-btn:hover {
+      background-color: var(--orange-dark);
+    }
+
+    .escalate-btn.final-call {
+      background-color: var(--green);
+      box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
+    }
+
+    .focus-nav-secondary {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .btn-secondary {
+      background-color: var(--slate-200);
+      color: var(--navy);
+      font-size: 14px;
+      padding: 10px 12px;
+    }
+
+    /* 10-Minute Rhythm Card */
+    .rhythm-card {
+      background-color: var(--navy);
+      color: var(--white);
+      border: 3px solid var(--orange);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .rhythm-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    @media (min-width: 580px) {
+      .rhythm-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .rhythm-slot {
+      background-color: var(--navy-mid);
+      border: 2px solid #334155;
+      border-left: 5px solid var(--orange);
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .rhythm-slot.handoff {
+      border-left-color: var(--green);
+      background-color: #132A20;
+    }
+
+    .rhythm-time {
+      font-size: 12px;
+      font-weight: 900;
+      color: #FDBA74;
+      letter-spacing: 0.04em;
+    }
+
+    .rhythm-slot.handoff .rhythm-time {
+      color: #86EFAC;
+    }
+
+    /* =========================================================================
+       TAB 2: OBJECTIONS & REBUTTALS (18)
+       ========================================================================= */
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .search-input {
+      width: 100%;
+      min-height: 52px;
+      padding: 12px 52px 12px 14px;
+      border-radius: var(--radius-md);
+      border: 2px solid var(--navy);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      background-color: var(--white);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: var(--orange);
+    }
+
+    .clear-search {
+      position: absolute;
+      right: 4px;
+      min-height: 44px;
+      width: 44px;
+      background-color: var(--slate-200);
+      color: var(--navy);
+      font-size: 16px;
+      border-radius: 8px;
+    }
+
+    .filter-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .chip-btn {
+      background-color: var(--white);
+      color: var(--navy);
+      border: 2px solid var(--slate-300);
+      padding: 8px 12px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .chip-btn.active {
+      background-color: var(--navy);
+      color: var(--white);
+      border-color: var(--navy);
+    }
+
+    .obj-card {
+      background-color: var(--white);
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--slate-300);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .obj-card.priority-card {
+      border-color: var(--orange);
+    }
+
+    .obj-header-btn {
+      width: 100%;
+      background-color: transparent;
+      color: var(--navy);
+      padding: 14px 16px;
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-radius: 0;
+    }
+
+    .obj-header-btn:hover {
+      background-color: var(--bg);
+    }
+
+    .obj-title {
+      font-size: 17px;
+      font-weight: 900;
+      color: var(--navy);
+      margin-top: 5px;
+      line-height: 1.32;
+    }
+
+    .obj-sub {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--slate-600);
+      margin-top: 3px;
+    }
+
+    .obj-chevron {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background-color: var(--slate-100);
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .obj-card.open .obj-chevron {
+      background-color: var(--navy);
+      color: var(--white);
+      transform: rotate(180deg);
+    }
+
+    .obj-body {
+      padding: 14px 16px 16px;
+      border-top: 2px solid var(--slate-200);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background-color: var(--bg);
+    }
+
+    .store-toggle-box {
+      background-color: var(--white);
+      border: 2px solid var(--orange);
+      border-radius: var(--radius-md);
+      padding: 10px;
+    }
+
+    .store-toggle-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .store-mode-btn {
+      background-color: var(--slate-100);
+      color: var(--navy);
+      border: 2px solid var(--slate-300);
+      padding: 8px 10px;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .store-mode-btn.active {
+      background-color: var(--orange);
+      color: var(--white);
+      border-color: var(--orange-dark);
+    }
+
+    .step-box {
+      border-radius: var(--radius-md);
+      padding: 12px;
+    }
+
+    .step-box-1 {
+      background-color: var(--gold-bg);
+      border-left: 5px solid #F59E0B;
+    }
+
+    .step-box-2 {
+      background-color: var(--white);
+      border: 2px solid var(--slate-200);
+      border-left: 5px solid var(--navy);
+    }
+
+    .step-box-3 {
+      background-color: var(--green-tint);
+      border: 2px solid var(--green);
+    }
+
+    .step-box-label {
+      font-size: 11px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 4px;
+    }
+
+    .step-box-1 .step-box-label { color: #B45309; }
+    .step-box-2 .step-box-label { color: var(--navy); }
+    .step-box-3 .step-box-label { color: var(--green-dark); }
+
+    .step-box-text {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.45;
+    }
+
+    .body-tone-box {
+      background-color: var(--blue-tint);
+      border: 2px solid var(--blue-border);
+      border-radius: var(--radius-md);
+      padding: 11px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--blue-text);
+    }
+
+    .copy-script-btn {
+      background-color: var(--navy);
+      color: var(--white);
+      font-size: 15px;
+      padding: 10px 16px;
+      align-self: flex-start;
+    }
+
+    /* =========================================================================
+       TAB 3: 4–6/HR PACE & 10-MINUTE RHYTHM TIMER
+       ========================================================================= */
+    .rhythm-timer-hero {
+      background-color: var(--navy);
+      color: var(--white);
+      border: 3px solid var(--orange);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+    }
+
+    .timer-display-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 10px 0 12px;
+      flex-wrap: wrap;
+    }
+
+    .big-clock {
+      font-size: 46px;
+      font-weight: 900;
+      color: #FDBA74;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .big-clock.urgent {
+      color: #FCA5A5;
+    }
+
+    .timer-phases-strip {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    @media (min-width: 580px) {
+      .timer-phases-strip {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .timer-phase-pill {
+      background-color: var(--navy-mid);
+      border: 2px solid #334155;
+      border-radius: var(--radius-md);
+      padding: 9px 10px;
+      opacity: 0.65;
+      transition: all 0.15s ease;
+    }
+
+    .timer-phase-pill.current {
+      opacity: 1;
+      background-color: var(--orange);
+      border-color: var(--white);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 10px rgba(234, 88, 12, 0.45);
+    }
+
+    .timer-phase-pill.current.handoff-phase {
+      background-color: var(--green);
+    }
+
+    .timer-controls-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .logged-transfer-btn {
+      grid-column: span 2;
+      min-height: 58px;
+      background-color: var(--green);
+      color: var(--white);
+      font-size: 17px;
+      font-weight: 900;
+      border: 2px solid var(--green-border);
+      box-shadow: 0 4px 12px rgba(22, 163, 74, 0.4);
+    }
+
+    .logged-transfer-btn:hover {
+      background-color: var(--green-dark);
+    }
+
+    .counter-card {
+      background-color: var(--bg);
+      border: 2px solid var(--slate-300);
+      border-radius: var(--radius-md);
+      padding: 14px;
+    }
+
+    .counter-card.goal-met {
+      border-color: var(--green);
+      background-color: var(--green-tint);
+    }
+
+    .counter-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .counter-num {
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--navy);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+      background-color: var(--slate-200);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--orange);
+      transition: width 0.2s ease;
+    }
+
+    .progress-fill.green {
+      background-color: var(--green);
+    }
+
+    .counter-btns {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 8px;
+    }
+
+    .btn-minus {
+      background-color: var(--white);
+      border: 2px solid var(--slate-300);
+      color: var(--navy);
+      font-size: 20px;
+    }
+
+    .btn-plus {
+      background-color: var(--orange);
+      color: var(--white);
+      font-size: 18px;
+    }
+
+    .btn-plus.green {
+      background-color: var(--green);
+    }
+
+    .coaching-alert-red {
+      background-color: var(--red);
+      color: var(--white);
+      border-radius: var(--radius-md);
+      padding: 15px;
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1.42;
+      border: 3px solid #7F1D1D;
+    }
+
+    .coaching-alert-green {
+      background-color: var(--green);
+      color: var(--white);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 16px;
+      font-weight: 900;
+      border: 3px solid #14532D;
+    }
+
+    .coaching-alert-gold {
+      background-color: var(--gold-bg);
+      color: var(--gold-text);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      font-size: 17px;
+      font-weight: 900;
+      border: 3px solid var(--gold-border);
+    }
+
+    .zone-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    @media (min-width: 540px) {
+      .zone-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .zone-btn {
+      background-color: var(--white);
+      border: 2px solid var(--slate-300);
+      color: var(--navy);
+      padding: 12px;
+      text-align: left;
+      font-size: 15px;
+      line-height: 1.3;
+    }
+
+    .zone-btn.active {
+      background-color: var(--navy);
+      color: var(--white);
+      border-color: var(--orange);
+    }
+
+    /* =========================================================================
+       TAB 4: SPEED-DIAL DRILL (8-ROUND RAPID-FIRE SIMULATOR)
+       ========================================================================= */
+    .drill-scenario-box {
+      background-color: var(--navy);
+      color: var(--white);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin: 12px 0;
+    }
+
+    .drill-choice-btn {
+      width: 100%;
+      text-align: left;
+      padding: 14px;
+      background-color: var(--white);
+      border: 2px solid var(--slate-300);
+      color: var(--navy);
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.42;
+    }
+
+    .drill-choice-btn.correct {
+      background-color: var(--green-tint);
+      border-color: var(--green);
+      color: #14532D;
+    }
+
+    .drill-choice-btn.wrong {
+      background-color: var(--red-tint);
+      border-color: var(--red);
+      color: #7F1D1D;
+    }
+
+    .drill-choice-btn.dimmed {
+      opacity: 0.55;
+    }
+
+    .feedback-box {
+      border-radius: var(--radius-md);
+      padding: 14px;
+      margin-top: 12px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .feedback-box.ok {
+      background-color: var(--green-tint);
+      border: 2px solid var(--green);
+      color: #14532D;
+    }
+
+    .feedback-box.bad {
+      background-color: var(--red-tint);
+      border: 2px solid var(--red);
+      color: #7F1D1D;
+    }
+
+    /* Non-blocking Toast Banner */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: var(--navy);
+      color: var(--white);
+      border: 2px solid var(--green);
+      padding: 12px 20px;
+      border-radius: var(--radius-md);
+      font-size: 15px;
+      font-weight: 900;
+      z-index: 100;
+      box-shadow: var(--shadow-md);
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===================================================================== -->
+  <!-- PERSISTENT STICKY TOP HEADER & 4-TAB NAVIGATION                       -->
+  <!-- ===================================================================== -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand-block">
+          <div class="brand-icon" aria-hidden="true">📞</div>
+          <div>
+            <h1 class="brand-title">Contest Transfer Coach: 4–6 Calls/Hr Field Weapon</h1>
+            <span class="target-badge">TARGET: 4–6 LIVE TRANSFERS / HR</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          id="header-transfer-pill"
+          class="transfer-pill-btn"
+          onclick="switchTab('pace')"
+          title="Jump to 4–6/Hr Pace & Timer"
+        >
+          Transfers: 0 / 6
+        </button>
+      </div>
+
+      <nav class="nav-grid" aria-label="Main Navigation">
+        <button type="button" id="tab-btn-script" class="nav-tab active" onclick="switchTab('script')">
+          Walk &amp; Talk Script
+        </button>
+        <button type="button" id="tab-btn-objections" class="nav-tab" onclick="switchTab('objections')">
+          Objections &amp; Rebuttals (18)
+        </button>
+        <button type="button" id="tab-btn-pace" class="nav-tab" onclick="switchTab('pace')">
+          4–6/Hr Pace &amp; Timer
+        </button>
+        <button type="button" id="tab-btn-drill" class="nav-tab" onclick="switchTab('drill')">
+          Speed-Dial Drill
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- MAIN APPLICATION CONTAINER                                            -->
+  <!-- ===================================================================== -->
+  <main class="main-container">
+
+    <!-- =================================================================== -->
+    <!-- TAB 1: "Walk & Talk Script" (4-Step Teleprompter & 10-Min Rhythm)   -->
+    <!-- =================================================================== -->
+    <section id="view-script" class="section-stack">
+      <div class="zero-friction-banner" role="alert">
+        🚨 ZERO DATA FRICTION IN THE AISLE: Ask First Name + Homeowner ONLY → Hit Speed Dial Within 2 Seconds! Never collect phone numbers, addresses, emails, or last names in the aisle—the registration desk handles data entry.
+      </div>
+
+      <!-- Live 4-Field Personalization Bar -->
+      <div class="card card-navy">
+        <div class="personalizer-grid">
+          <div>
+            <label for="input-rep-name" class="field-label">Your Name</label>
+            <input
+              id="input-rep-name"
+              type="text"
+              class="text-input"
+              value="Alex"
+              oninput="updatePersonalization()"
+            />
+          </div>
+          <div>
+            <label for="input-store-num" class="field-label">Store #</label>
+            <input
+              id="input-store-num"
+              type="text"
+              class="text-input"
+              value="1234"
+              oninput="updatePersonalization()"
+            />
+          </div>
+          <div>
+            <label for="input-desk-name" class="field-label">Desk Rep Name</label>
+            <input
+              id="input-desk-name"
+              type="text"
+              class="text-input"
+              value="Sarah"
+              oninput="updatePersonalization()"
+            />
+          </div>
+          <div>
+            <label for="input-cust-name" class="field-label">Customer First Name</label>
+            <input
+              id="input-cust-name"
+              type="text"
+              class="text-input"
+              value="Dave"
+              oninput="updatePersonalization()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- View Mode Toggle -->
+      <div class="mode-switch-row" role="group" aria-label="Script View Mode">
+        <button
+          type="button"
+          id="btn-mode-focus"
+          class="mode-btn active"
+          onclick="setScriptMode('focus')"
+        >
+          🎯 Focus Step Mode
+        </button>
+        <button
+          type="button"
+          id="btn-mode-all"
+          class="mode-btn"
+          onclick="setScriptMode('all')"
+        >
+          📋 View Full 4-Step Flow
+        </button>
+      </div>
+
+      <!-- Dynamic 4-Step Teleprompter Area -->
+      <div id="script-render-area"></div>
+
+      <!-- Visual 10-Minute Rhythm Card -->
+      <div class="rhythm-card">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+          <span class="badge badge-orange">⏱️ THE 10-MINUTE RHYTHM CARD</span>
+          <span style="font-size:13px; font-weight:900; color:#86EFAC;">1 Transfer Every 10 Mins = 6 Calls/Hr</span>
+        </div>
+        <h2 style="font-size:18px; font-weight:900; margin-top:6px;">
+          How to Hit 4 to 6 Live Contest Transfers Every Single Hour
+        </h2>
+
+        <div class="rhythm-grid">
+          <div class="rhythm-slot">
+            <div class="rhythm-time">[0:00 – 2:00] SCOUT &amp; ENGAGE</div>
+            <div style="font-size:15px; font-weight:800; margin-top:3px;">
+              First 20 ft from Main Entrance / Power Aisle transitions. Big smile, 45° open stance.
+            </div>
+          </div>
+
+          <div class="rhythm-slot">
+            <div class="rhythm-time">[2:00 – 5:00] THE "WALK &amp; GUIDE"</div>
+            <div style="font-size:15px; font-weight:800; margin-top:3px;">
+              Home Depot app search, aisle navigation, and casual giveaway drop-in while walking.
+            </div>
+          </div>
+
+          <div class="rhythm-slot handoff">
+            <div class="rhythm-time">[5:00 – 7:00] THE HANDOFF</div>
+            <div style="font-size:15px; font-weight:800; margin-top:3px;">
+              Hit Speed Dial in &lt;2 seconds upon hearing "Homeowner" + 15-second warm intro to Call Center.
+            </div>
+          </div>
+
+          <div class="rhythm-slot">
+            <div class="rhythm-time">[7:00 – 10:00] RESET &amp; REPOSITION</div>
+            <div style="font-size:15px; font-weight:800; margin-top:3px;">
+              Leave customer happily at their aisle, walk back to entrance vector, and repeat immediately.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 2: "Objections & Rebuttals (18)" (Pocket Rebuttal Finder)       -->
+    <!-- =================================================================== -->
+    <section id="view-objections" class="section-stack hidden">
+      <div class="card card-navy">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+          <span class="badge badge-orange">18 CONTEST TRANSFER REBUTTALS</span>
+          <span style="font-size:13px; font-weight:900; color:var(--green);">30-Second Desk Stamp</span>
+        </div>
+        <h2 style="font-size:19px; font-weight:900; margin-bottom:10px;">
+          Pocket Objection &amp; Rebuttal Finder
+        </h2>
+
+        <div class="search-wrapper">
+          <input
+            id="obj-search-input"
+            type="text"
+            class="search-input"
+            placeholder="Search: phone, QR, rush, catch, already, Brita, spouse..."
+            oninput="handleObjSearch(this.value)"
+          />
+          <button
+            type="button"
+            id="obj-clear-btn"
+            class="clear-search hidden"
+            onclick="clearObjSearch()"
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="filter-chips" role="group" aria-label="Objection Categories">
+          <button type="button" class="chip-btn active" data-cat="all" onclick="setObjCategory('all')">All (18)</button>
+          <button type="button" class="chip-btn" data-cat="phone" onclick="setObjCategory('phone')">Phone &amp; Speed-Dial</button>
+          <button type="button" class="chip-btn" data-cat="rush" onclick="setObjCategory('rush')">Rush &amp; Reflex No</button>
+          <button type="button" class="chip-btn" data-cat="privacy" onclick="setObjCategory('privacy')">Privacy &amp; Catch</button>
+          <button type="button" class="chip-btn" data-cat="water" onclick="setObjCategory('water')">Water &amp; Existing Units</button>
+          <button type="button" class="chip-btn" data-cat="store" onclick="setObjCategory('store')">Store &amp; Qualifier</button>
+        </div>
+      </div>
+
+      <div id="objections-render-area" class="section-stack"></div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 3: "4–6/Hr Pace & Timer" (10-Min Rhythm Clock & Scorecard)      -->
+    <!-- =================================================================== -->
+    <section id="view-pace" class="section-stack hidden">
+      <!-- Live 10-Minute Transfer Rhythm Countdown Timer -->
+      <div class="rhythm-timer-hero">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+          <span class="badge badge-orange">⏱️ 10-MINUTE TRANSFER RHYTHM TIMER</span>
+          <span id="rhythm-active-label" style="font-size:13px; font-weight:900; color:#86EFAC;">
+            Phase 1: Scout &amp; Engage
+          </span>
+        </div>
+
+        <div class="timer-display-row">
+          <div>
+            <div style="font-size:11px; font-weight:800; color:#94A3B8; text-transform:uppercase;">Cycle Time Remaining</div>
+            <div id="rhythm-clock-display" class="big-clock">10:00</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:12px; font-weight:800; color:#CBD5E1;">Elapsed in Cycle</div>
+            <div id="rhythm-elapsed-display" style="font-size:20px; font-weight:900; color:var(--white); font-variant-numeric:tabular-nums;">0:00 / 10:00</div>
+          </div>
+        </div>
+
+        <!-- 4 Live Highlighting Cycle Phase Pills -->
+        <div class="timer-phases-strip">
+          <div id="rhythm-pill-1" class="timer-phase-pill current">
+            <div style="font-size:11px; font-weight:900;">0:00 – 2:00</div>
+            <div style="font-size:13px; font-weight:800;">Scout &amp; Engage</div>
+          </div>
+          <div id="rhythm-pill-2" class="timer-phase-pill">
+            <div style="font-size:11px; font-weight:900;">2:00 – 5:00</div>
+            <div style="font-size:13px; font-weight:800;">Walk &amp; Guide</div>
+          </div>
+          <div id="rhythm-pill-3" class="timer-phase-pill handoff-phase">
+            <div style="font-size:11px; font-weight:900;">5:00 – 7:00</div>
+            <div style="font-size:13px; font-weight:800;">Speed-Dial Handoff</div>
+          </div>
+          <div id="rhythm-pill-4" class="timer-phase-pill">
+            <div style="font-size:11px; font-weight:900;">7:00 – 10:00</div>
+            <div style="font-size:13px; font-weight:800;">Reset &amp; Reposition</div>
+          </div>
+        </div>
+
+        <div class="timer-controls-grid">
+          <button type="button" id="rhythm-start-btn" class="escalate-btn" style="min-height:50px;" onclick="toggleRhythmTimer()">
+            ▶ Start 10:00
+          </button>
+          <button type="button" class="btn-secondary" style="min-height:50px;" onclick="resetRhythmTimer()">
+            ↺ Reset 10:00
+          </button>
+          <button type="button" class="logged-transfer-btn" onclick="logTransferAndReset()">
+            📞 Logged Transfer → Reset 10:00
+          </button>
+        </div>
+      </div>
+
+      <!-- Hourly Pace Scorecard -->
+      <div class="card card-orange">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px; flex-wrap:wrap;">
+          <div>
+            <span class="badge badge-navy" style="margin-bottom:4px;">HOURLY SCORECARD</span>
+            <h2 style="font-size:19px; font-weight:900;">4–6 Live Transfers / Hr Tracker</h2>
+          </div>
+          <button type="button" id="pace-reset-btn" class="btn-secondary" onclick="handlePaceReset()">
+            Reset Hour
+          </button>
+        </div>
+
+        <div id="pace-coaching-alert" style="margin-bottom:12px;"></div>
+
+        <div id="pace-counters-area" class="section-stack"></div>
+      </div>
+
+      <!-- Power Aisle Rotation Selector -->
+      <div class="card card-navy">
+        <span class="badge badge-orange" style="margin-bottom:6px;">POWER AISLE ROTATION</span>
+        <h3 style="font-size:18px; font-weight:900;">Active Floor Vector</h3>
+        <p style="font-size:14px; font-weight:600; color:var(--slate-600);">
+          Tap your active zone as you cycle between the main entrance vector and high-traffic power aisles:
+        </p>
+        <div id="zone-grid-area" class="zone-grid"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- TAB 4: "Speed-Dial Drill" (8-Round Rapid-Fire Simulator)            -->
+    <!-- =================================================================== -->
+    <section id="view-drill" class="section-stack hidden">
+      <div class="card card-navy">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:4px;">
+          <span class="badge badge-orange">8-ROUND RAPID-FIRE SIMULATOR</span>
+          <span id="drill-score-pill" style="font-size:15px; font-weight:900; color:var(--green);">Score: 0 / 8</span>
+        </div>
+        <h2 style="font-size:19px; font-weight:900;">
+          Contest Transfer Speed-Dial Drill
+        </h2>
+        <div id="drill-render-area"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Non-blocking Toast Notification -->
+  <div id="toast-box" class="toast hidden" role="status" aria-live="polite">
+    ✅ Script copied to clipboard!
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- VANILLA JAVASCRIPT LOGIC (ZERO EXTERNAL DEPENDENCIES)                 -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // 1. TAB 1 DATA: 4-STEP CONTEST TRANSFER TELEPROMPTER
+    // =========================================================================
+    const SCRIPT_STEPS = [
+      {
+        step: 1,
+        badge: 'STEP 1 • AISLE CONCIERGE',
+        title: 'Pattern Interrupt & Direct Help ("Aisle Concierge")',
+        cue: 'Big smile, open 45° posture, mobile in the power aisles (Lumber, Hardware, Plumbing, Garden). Use the Home Depot app to help them find their item first.',
+        hasBranch: false,
+        renderHTML: () => `
+          <div class="script-speech-box focus-speech">
+            <strong>Promoter:</strong> "Hey, good morning! What project are you tackling today?"
+            <br/><br/>
+            <span style="color:var(--slate-600); font-size:16px;"><em>Customer: "Looking for tape measures / air filters / plumbing fittings."</em></span>
+            <br/><br/>
+            <strong>Promoter (Already moving):</strong> "Follow me, I'll show you right where they're at."
+          </div>
+        `
+      },
+      {
+        step: 2,
+        badge: 'STEP 2 • WALK & TALK DROP-IN',
+        title: 'The Casual Walk-and-Talk Drop-In',
+        cue: 'Deliver casually while walking together or checking aisle location in the Home Depot app—zero sales-pitch tone.',
+        hasBranch: false,
+        renderHTML: () => `
+          <div class="script-speech-box focus-speech">
+            "By the way, did they get you entered into the giveaway at the front yet? ... We're drawing for a water purification system right now. Only takes 30 seconds to get your ticket in. Are you a homeowner around here?"
+          </div>
+        `
+      },
+      {
+        step: 3,
+        badge: 'STEP 3 • BRANCHING THE FLOW',
+        title: 'Homeowner Speed-Dial vs. Renter QR Branch',
+        cue: 'Keep phone unlocked in palm with call center on speed dial—hit Call within 2 seconds of hearing "Homeowner"! Never collect phone numbers, addresses, emails, or last names in the aisle.',
+        hasBranch: true,
+        renderHTML: () => ''
+      },
+      {
+        step: 4,
+        badge: 'STEP 4 • 15-SEC WARM HANDOFF',
+        title: 'The 15-Second Warm Call-Center Handoff',
+        cue: 'Keep eye contact while dialing (Dual Focus), speak authoritatively into the phone, then extend the phone at waist height like a handshake ("Handshake Hand-Off").',
+        hasBranch: false,
+        renderHTML: (tokens) => `
+          <div class="handoff-subbox">
+            <span class="badge badge-navy" style="margin-bottom:6px;">📞 INTO PHONE (TO CALL CENTER)</span>
+            <div style="font-size:18px; font-weight:800; color:var(--navy); line-height:1.5;">
+              "Hey, this is ${tokens.rep} at Home Depot store #${tokens.store}. I'm standing here with ${tokens.cust}, who owns a home locally, and we're getting them entered into the drawing for the water purification system."
+            </div>
+          </div>
+
+          <div class="handoff-subbox customer-box">
+            <span class="badge badge-green" style="margin-bottom:6px;">🤝 TO CUSTOMER (WITH A WARM SMILE)</span>
+            <div style="font-size:18px; font-weight:800; color:#14532D; line-height:1.5;">
+              "Here is ${tokens.desk} at the registration desk—she'll confirm your entry number. Have a great day with that project, ${tokens.cust}!"
+            </div>
+          </div>
+        `
+      }
+    ];
+
+    // =========================================================================
+    // 2. TAB 2 DATA: ALL 18 CONTEST TRANSFER OBJECTIONS & REBUTTALS
+    // =========================================================================
+    const OBJECTIONS = [
+      {
+        id: 1,
+        priority: true,
+        cats: ['phone'],
+        badgeText: '#1 PHONE & QR OBJECTION',
+        badgeClass: 'badge-orange',
+        trigger: '"Why do I have to talk to someone on the phone? Just let me scan a QR code or write it down."',
+        sub: 'Shopper asks to scan a QR code or jot down their info instead of taking the 30-second desk call',
+        step1: '"Totally fair question—I actually save QR codes for renters!"',
+        step2: '"The QR code only drops you into a general pool, whereas homeowner entries for the water purification system are stamped live by our store registration desk in 30 seconds so your ticket is verified and never lost—with zero credit cards or sales pitches."',
+        step3: '"What\'s your first name? Let me connect the desk for 30 seconds right while you grab your items!"',
+        tip: 'Body Language & Tone: Keep phone unlocked in your palm at waist/chest height, smile warmly, and use a calm concierge tone—never sound defensive.'
+      },
+      {
+        id: 2,
+        priority: true,
+        cats: ['rush'],
+        badgeText: 'RUSH & WALK-AND-TALK',
+        badgeClass: 'badge-navy',
+        trigger: '"I\'m in a rush / I don\'t have time for a phone call."',
+        sub: 'Shopper moving quickly toward checkout or another power aisle',
+        step1: '"I completely respect that—I\'ll walk right alongside you!"',
+        step2: '"You don\'t even have to stop pushing your cart—our registration desk stamps your water purification system ticket in 30 seconds flat while you head toward checkout."',
+        step3: '"Are you a homeowner around here? ... Awesome, what\'s your first name?"',
+        tip: 'Body Language & Tone: Match their walking stride beside their cart—never block their path. Speak briskly and cheerfully.'
+      },
+      {
+        id: 3,
+        priority: true,
+        cats: ['phone', 'privacy'],
+        badgeText: 'ZERO-DATA ADVANTAGE',
+        badgeClass: 'badge-orange',
+        trigger: '"I don\'t give out my phone number / I hate telemarketers."',
+        sub: 'Privacy guard & spam fear in the aisle',
+        step1: '"I hear you 100%—nobody wants spam calls!"',
+        step2: '"That\'s the best part: you don\'t even have to give ME your phone number or last name here in the aisle! It\'s just a 30-second live confirmation with our registration desk—zero spam and zero purchases are permitted on this line."',
+        step3: '"What\'s your first name so I can have the desk stamp your entry?"',
+        tip: 'Body Language & Tone: Take a relaxed half-step back to give personal space, open palms visible, and use a matter-of-fact, reassuring tone.'
+      },
+      {
+        id: 4,
+        priority: true,
+        cats: ['privacy'],
+        badgeText: 'CATCH / NO-SELL GUARANTEE',
+        badgeClass: 'badge-orange',
+        trigger: '"What\'s the catch? Are they going to try to sell me a water system on the phone?"',
+        sub: 'Skepticism about a phone sales pitch',
+        step1: '"Fair question—everyone wonders what the catch is!"',
+        step2: '"It\'s a Home Depot vendor co-op awareness giveaway for the water purification system. In fact, if they pitch you anything or ask for a payment method, hang up right in my face!"',
+        step3: '"Takes 30 seconds to confirm your ticket—what\'s your first name?"',
+        tip: 'Body Language & Tone: Deliver the "hang up right in my face!" line with a big, confident grin—it immediately melts skepticism.'
+      },
+      {
+        id: 5,
+        priority: false,
+        cats: ['store'],
+        badgeText: 'STORE & QUALIFIER',
+        badgeClass: 'badge-navy',
+        trigger: '"I already entered / I already did that!"',
+        sub: 'Shopper claims they already entered in a brand-new store or at another location',
+        step1: '"Haha, you\'re quick—love it!"',
+        step2: '"Entries for the water purification system giveaway are store-specific, so it takes just 30 seconds for our registration desk to stamp your ticket specifically for this Home Depot store."',
+        step3: '"Are you a homeowner around here? ... Great, what\'s your first name?"',
+        tip: 'Body Language & Tone: Light, playful smile—never argue or correct them bluntly. Keep walking with them as you dial.'
+      },
+      {
+        id: 6,
+        priority: false,
+        cats: ['store'],
+        badgeText: 'RENTER QR BRANCH',
+        badgeClass: 'badge-navy',
+        trigger: '"I rent / I\'m a tenant."',
+        sub: 'Non-homeowner qualification branch (5-second warm exit)',
+        step1: '"No worries at all!"',
+        step2: '"Just scan this QR code right here on your phone and it\'ll enter you right into the general drawing."',
+        step3: '"Have a great day with that project!"',
+        tip: 'Body Language & Tone: Warm, appreciative smile; hand off smoothly at their aisle and walk back to the main entrance vector within 5 seconds.'
+      },
+      {
+        id: 7,
+        priority: false,
+        cats: ['rush'],
+        badgeText: 'AISLE CONCIERGE PIVOT',
+        badgeClass: 'badge-navy',
+        trigger: '"I\'m just looking / I don\'t need help finding anything."',
+        sub: 'Shopper declines Aisle Concierge item help',
+        step1: '"Awesome—browsing Home Depot is the best part of the weekend!"',
+        step2: '"Since you\'re already strolling through, did they get you entered into the giveaway at the front yet? We\'re drawing for a water purification system right now and it takes 30 seconds."',
+        step3: '"Are you a homeowner here in the area?"',
+        tip: 'Body Language & Tone: Open 45° posture, hands relaxed, conversational neighbor tone—zero pressure.'
+      },
+      {
+        id: 8,
+        priority: false,
+        cats: ['rush'],
+        badgeText: 'NO PAPER FLYERS',
+        badgeClass: 'badge-navy',
+        trigger: '"Just give me a flyer / business card and I\'ll look online later."',
+        sub: 'Polite paper brush-off',
+        step1: '"I wish I had a stack of cards to hand you!"',
+        step2: '"Because this is an in-store Home Depot co-op giveaway, we don\'t hand out paper flyers—entries are stamped digitally through our store registration desk in 30 seconds while you\'re shopping."',
+        step3: '"Are you a homeowner locally? ... Perfect, what\'s your first name?"',
+        tip: 'Body Language & Tone: Show empty hands with a friendly shrug and tap your unlocked phone—keep momentum moving forward.'
+      },
+      {
+        id: 9,
+        priority: true,
+        cats: ['water'],
+        badgeText: '10-YEAR RULE QUALIFIER',
+        badgeClass: 'badge-amber',
+        trigger: '"I already have a whole-house water softener / filtration system."',
+        sub: '10-Year Rule: 10+ years = Qualifies for drawing + performance check! | Under 10 yrs = Compliment & move on',
+        step1: '"Oh nice—how long have you had that system?"',
+        step2: '"[10+ YEARS OLD]: After 10 years, resin beds and media wear down, so you still qualify for the water purification system drawing AND a complimentary performance check! [UNDER 10 YEARS]: That\'s awesome—you\'re already in great shape!"',
+        step3: '"[10+ YEARS]: What\'s your first name so the desk can stamp your ticket? | [UNDER 10 YEARS]: Have a great day with your project!"',
+        tip: 'Body Language & Tone: Nod approvingly to validate their smart home investment; check system age in 5 seconds flat.'
+      },
+      {
+        id: 10,
+        priority: false,
+        cats: ['water'],
+        badgeText: 'WATER & EXISTING UNITS',
+        badgeClass: 'badge-navy',
+        trigger: '"I already have a Brita / fridge filter."',
+        sub: 'Pitcher or refrigerator dispenser excuse',
+        step1: '"Those are great for keeping a cold pitcher in the fridge!"',
+        step2: '"This giveaway is actually for a whole-home water purification system that covers every faucet, ice maker, and shower in your house—and it only takes 30 seconds to enter."',
+        step3: '"Are you a homeowner around here? ... Great, what\'s your first name?"',
+        tip: 'Body Language & Tone: Agree warmly first—never put down their Brita or fridge filter.'
+      },
+      {
+        id: 11,
+        priority: false,
+        cats: ['water'],
+        badgeText: 'WATER & EXISTING UNITS',
+        badgeClass: 'badge-navy',
+        trigger: '"I drink bottled water."',
+        sub: 'Buys cases of bottled water',
+        step1: '"Smart move avoiding tap water for drinking—lots of folks do!"',
+        step2: '"You still cook pasta, brew coffee, and shower in tap water every day—and winning a whole-home water purification system eliminates hauling heavy cases from the store. Takes 30 seconds to get your ticket stamped."',
+        step3: '"Do you own your home here in the area?"',
+        tip: 'Body Language & Tone: Light, relatable smile—connect directly to the hassle of carrying cases of water at Home Depot.'
+      },
+      {
+        id: 12,
+        priority: false,
+        cats: ['water'],
+        badgeText: 'WATER & EXISTING UNITS',
+        badgeClass: 'badge-navy',
+        trigger: '"My water is fine / tastes great."',
+        sub: 'Assumes good-tasting water means no reason to enter',
+        step1: '"That\'s awesome—you\'re ahead of most folks already!"',
+        step2: '"Good news is you don\'t need bad-tasting water to win a free whole-home water purification system! It takes 30 seconds for our registration desk to stamp your entry while you shop."',
+        step3: '"Are you a homeowner locally? ... Awesome, what\'s your first name?"',
+        tip: 'Body Language & Tone: Upbeat, playful tone—keep it focused on winning the giveaway, not debating water taste.'
+      },
+      {
+        id: 13,
+        priority: false,
+        cats: ['privacy'],
+        badgeText: 'PRIVACY & CATCH',
+        badgeClass: 'badge-navy',
+        trigger: '"I never win anything / I don\'t do contests."',
+        sub: 'Sweepstakes skepticism',
+        step1: '"Haha, I used to say the exact same thing!"',
+        step2: '"Somebody right here in our local Home Depot stores takes this water purification system home every drawing—and since it takes 30 seconds with zero purchase, you might as well have a ticket in the hat."',
+        step3: '"Are you a homeowner around here? ... What\'s your first name?"',
+        tip: 'Body Language & Tone: Relatable chuckle and relaxed open posture—low stakes, high reward.'
+      },
+      {
+        id: 14,
+        priority: false,
+        cats: ['privacy'],
+        badgeText: 'PRIVACY & CATCH',
+        badgeClass: 'badge-navy',
+        trigger: '"I need to talk to my spouse first."',
+        sub: 'Partner decision deferral',
+        step1: '"I totally respect checking in with your spouse!"',
+        step2: '"The great thing about entering the giveaway is there is zero obligation to buy anything—it takes 30 seconds to get both of you entered in the drawing right now."',
+        step3: '"What\'s your first name so the desk can stamp your household entry?"',
+        tip: 'Body Language & Tone: Warm, understanding nod—reassure them no purchase decision is being made.'
+      },
+      {
+        id: 15,
+        priority: false,
+        cats: ['privacy'],
+        badgeText: 'PRIVACY & CATCH',
+        badgeClass: 'badge-navy',
+        trigger: '"Is this going to cost anything?"',
+        sub: 'Monetary risk aversion',
+        step1: '"Not a single penny!"',
+        step2: '"Entering the water purification system giveaway is 100% free—keep your wallet and credit cards completely in your pocket. It takes 30 seconds to stamp your entry."',
+        step3: '"Are you a homeowner here in town? ... Great, what\'s your first name?"',
+        tip: 'Body Language & Tone: Crisp, confident delivery with open palms—eliminate money worry in two seconds.'
+      },
+      {
+        id: 16,
+        priority: false,
+        cats: ['phone'],
+        badgeText: 'PHONE & SPEED-DIAL',
+        badgeClass: 'badge-navy',
+        trigger: '"Can\'t you just call them for me?"',
+        sub: 'Shopper asks promoter to enter them without speaking to the desk',
+        step1: '"I wish I could punch it in myself!"',
+        step2: '"Our registration desk just needs to hear a real homeowner\'s voice for 15 seconds to verify you\'re shopping in the store today and prevent duplicate or bot entries—and I already have them on speed dial."',
+        step3: '"What\'s your first name? Watch how fast this is..."',
+        tip: 'Body Language & Tone: Already have speed dial ready in your palm; hit Call within 2 seconds of hearing their first name.'
+      },
+      {
+        id: 17,
+        priority: false,
+        cats: ['phone', 'store'],
+        badgeText: 'PHONE & QUALIFIER',
+        badgeClass: 'badge-navy',
+        trigger: '"Why do you need to know if I\'m a homeowner?"',
+        sub: 'Questioning the homeowner qualifier',
+        step1: '"Great question—here\'s why:"',
+        step2: '"Because the grand-prize whole-home water purification system connects directly to the home\'s main water line, it requires homeowner authorization—so renters go into our general drawing instead."',
+        step3: '"Do you own your home around here, or are you renting?"',
+        tip: 'Body Language & Tone: Clear, logical, matter-of-fact tone—makes total common sense to every shopper.'
+      },
+      {
+        id: 18,
+        priority: true,
+        cats: ['rush'],
+        badgeText: '3-SECOND APR METHOD',
+        badgeClass: 'badge-orange',
+        trigger: '"I\'m not interested."',
+        sub: '3-Second Reflexive Decline (Acknowledge, Pivot, Re-qualify)',
+        step1: '"Totally understand—I\'m not selling anything out of a cart today!"',
+        step2: '"Just making sure local homeowners get their free ticket in the water purification system drawing before heading out."',
+        step3: '"Are you a homeowner around here?"',
+        tip: 'Body Language & Tone: Unbothered smile, open 45° stance, zero sales pressure—treat "not interested" as an automatic reflex.'
+      }
+    ];
+
+    // =========================================================================
+    // 3. TAB 4 DATA: 8-ROUND SPEED-DIAL DRILL SIMULATOR
+    // =========================================================================
+    const DRILL_SCENARIOS = [
+      {
+        round: 1,
+        badge: 'ROUND 1 • AISLE CONCIERGE OPENER',
+        situation: 'You spot a shopper looking up at the aisle signs in Plumbing with a focused look. What is your Step 1 Aisle Concierge move?',
+        choices: [
+          {
+            id: 'a',
+            text: 'Stand quietly behind your table and wait for them to walk over.',
+            correct: false,
+            why: 'Passive booth-sitting gets 0 calls/hr! Be mobile in the power aisles and help them first.'
+          },
+          {
+            id: 'b',
+            text: 'Smile at a 45° angle, pull up the Home Depot app, and say: "Hey, good morning! What project are you tackling today? ... Follow me, I\'ll show you right where they\'re at."',
+            correct: true,
+            why: 'Spot on! Helping them find their item first as an Aisle Concierge breaks autopilot immediately.'
+          },
+          {
+            id: 'c',
+            text: 'Ask: "Can I get your full name, phone number, and home address for a water test?"',
+            correct: false,
+            why: 'ZERO data friction in the aisle! Never ask for phone numbers, addresses, or last names in the aisle.'
+          }
+        ]
+      },
+      {
+        round: 2,
+        badge: 'ROUND 2 • ZERO DATA FRICTION & 2-SEC SPEED DIAL',
+        situation: 'During your casual Walk & Talk drop-in, the shopper says: "Yeah, I own a home right down the road." What must you do within 2 seconds?',
+        choices: [
+          {
+            id: 'a',
+            text: 'Ask for their first name ONLY ("Awesome. What\'s your first name?") and hit Speed Dial within 2 seconds while keeping eye contact!',
+            correct: true,
+            why: 'Textbook! First Name + Homeowner ONLY → hit Speed Dial within 2 seconds. Let the registration desk collect the data.'
+          },
+          {
+            id: 'b',
+            text: 'Pull out a clipboard and write down their full name, street address, email, and cell number.',
+            correct: false,
+            why: 'Aisle data entry kills momentum and causes walk-aways! Keep zero data friction in the aisle.'
+          },
+          {
+            id: 'c',
+            text: 'Ask: "Would it be okay if I called our registration desk right now?"',
+            correct: false,
+            why: 'Never ask permission! Hit Speed Dial within 2 seconds of hearing "Homeowner."'
+          }
+        ]
+      },
+      {
+        round: 3,
+        badge: 'ROUND 3 • RENTER QR BRANCH VS. HOMEOWNER SPEED DIAL',
+        situation: 'You ask "Are you a homeowner around here?" and the shopper replies: "No, we actually rent an apartment nearby." What is your exact move?',
+        choices: [
+          {
+            id: 'a',
+            text: 'Dial the registration desk anyway to pad your call numbers.',
+            correct: false,
+            why: 'Never waste call center desk time on non-homeowners!'
+          },
+          {
+            id: 'b',
+            text: 'Say: "No worries at all! Just scan this QR code right here on your phone and it\'ll enter you in the general drawing. Have a great day with that project!" and walk back to the entrance vector within 5 seconds.',
+            correct: true,
+            why: 'Clean 5-second Renter QR branch! Friendly handoff and immediate reset to find your next homeowner.'
+          },
+          {
+            id: 'c',
+            text: 'Ignore them and walk away without saying anything.',
+            correct: false,
+            why: 'Always give renters a warm QR code handoff so every shopper leaves happy.'
+          }
+        ]
+      },
+      {
+        round: 4,
+        badge: 'ROUND 4 • "WHY DO I HAVE TO TALK ON THE PHONE?"',
+        situation: 'A homeowner asks: "Why do I have to talk to someone on the phone? Just let me scan a QR code or write it down." How do you respond?',
+        choices: [
+          {
+            id: 'a',
+            text: '"Totally fair! QR codes are for renters—homeowner entries for the water purification system are stamped live by our registration desk in 30 seconds so your ticket is verified and never lost, with zero credit cards or sales pitches. What\'s your first name?"',
+            correct: true,
+            why: 'Nailed it! Differentiated the QR code from the verified 30-second homeowner stamp and pivoted straight to First Name.'
+          },
+          {
+            id: 'b',
+            text: '"Okay, just scan the QR code then."',
+            correct: false,
+            why: 'Giving homeowners the renter QR code loses a live transfer!'
+          },
+          {
+            id: 'c',
+            text: '"Because my manager requires me to get 4 to 6 phone calls an hour."',
+            correct: false,
+            why: 'Never make it about your quota—frame it around verifying their prize ticket.'
+          }
+        ]
+      },
+      {
+        round: 5,
+        badge: 'ROUND 5 • "I\'M IN A RUSH" WALK & TALK',
+        situation: 'A homeowner is walking briskly toward checkout and says: "I\'m in a rush, I don\'t have time for a phone call." What do you do?',
+        choices: [
+          {
+            id: 'a',
+            text: 'Stand still and yell after them: "It only takes a minute!"',
+            correct: false,
+            why: 'Standing still lets them walk away—match their stride!'
+          },
+          {
+            id: 'b',
+            text: 'Walk alongside their cart: "I completely respect that—I\'ll walk right alongside you! You don\'t even have to stop pushing your cart—our desk stamps your ticket in 30 seconds flat while you head toward checkout. What\'s your first name?"',
+            correct: true,
+            why: 'Champion Walk & Talk execution! Zero stopping required + 30-second time anchor.'
+          },
+          {
+            id: 'c',
+            text: 'Step directly in front of their cart to force them to stop.',
+            correct: false,
+            why: 'Never block a shopper\'s cart—walk beside them at a 45° open angle.'
+          }
+        ]
+      },
+      {
+        round: 6,
+        badge: 'ROUND 6 • "ARE THEY GOING TO SELL ME SOMETHING?"',
+        situation: 'A skeptical homeowner asks: "What\'s the catch? Are they going to try to sell me a water system on the phone?" How do you slay this objection?',
+        choices: [
+          {
+            id: 'a',
+            text: '"Fair question! It\'s a Home Depot vendor co-op awareness giveaway for the water purification system. In fact, if they pitch you anything or ask for a payment method, hang up right in my face! Takes 30 seconds—what\'s your first name?"',
+            correct: true,
+            why: '10/10! The "hang up right in my face!" guarantee eliminates all sales-call fear.'
+          },
+          {
+            id: 'b',
+            text: 'Start explaining filtration pricing and installation options in the aisle.',
+            correct: false,
+            why: 'Never pitch equipment or prices in the aisle—keep it a 30-second giveaway stamp.'
+          },
+          {
+            id: 'c',
+            text: '"Well, they might ask if you want a quote later."',
+            correct: false,
+            why: 'Hesitation kills trust—be bold and clear that zero pitching happens on the confirmation call.'
+          }
+        ]
+      },
+      {
+        round: 7,
+        badge: 'ROUND 7 • 15-SECOND WARM CALL-CENTER HANDOFF',
+        situation: 'The call center desk picks up! How do you execute Step 4 (The 15-Second Warm Call-Center Handoff)?',
+        choices: [
+          {
+            id: 'a',
+            text: 'Put the phone on speaker and say: "Hey, somebody is here to talk to you."',
+            correct: false,
+            why: 'Weak, unframed handoff! Always give your name, store #, customer first name, homeowner status, and desk rep name.'
+          },
+          {
+            id: 'b',
+            text: 'Keep eye contact, speak authoritatively into the phone: "Hey, this is Alex at Home Depot store #1234. I\'m standing here with Dave, who owns a home locally, and we\'re getting them entered into the drawing for the water purification system." Then smile and hand off at waist height: "Here is Sarah at the registration desk—she\'ll confirm your entry number. Have a great day with that project, Dave!"',
+            correct: true,
+            why: 'Flawless Dual Focus + Handshake Hand-Off! Authoritative, warm, and under 15 seconds.'
+          },
+          {
+            id: 'c',
+            text: 'Look down at your shoes while waiting on hold and hand the phone over silently.',
+            correct: false,
+            why: 'Maintain Dual Focus eye contact and introduce the desk rep by name with a warm smile.'
+          }
+        ]
+      },
+      {
+        round: 8,
+        badge: 'ROUND 8 • 10-MINUTE RHYTHM TO HIT 4–6 CALLS/HR',
+        situation: 'You just completed a warm handoff at minute 6:30 of your 10-minute cycle. What do you do during minutes 7:00 to 10:00?',
+        choices: [
+          {
+            id: 'a',
+            text: 'Check personal texts on your phone for 10 minutes to celebrate.',
+            correct: false,
+            why: 'Phone scrolling kills momentum and drops you below the mandatory 4–6 transfers/hr pace!'
+          },
+          {
+            id: 'b',
+            text: 'Leave the customer happily at their aisle, walk briskly back to the main entrance / power aisle transition vector, reset your 10:00 timer, and scout your next shopper!',
+            correct: true,
+            why: 'Locked in! 1 completed cycle every 10 minutes puts you right at 6 live transfers per hour!'
+          },
+          {
+            id: 'c',
+            text: 'Hover over the customer while they finish their call with the desk.',
+            correct: false,
+            why: 'Give them space at their aisle and immediately reposition to intercept the next shopper.'
+          }
+        ]
+      }
+    ];
+
+    const AISLE_ZONES = [
+      { id: 'z1', title: 'Main Entrance Vector', desc: 'First 20 ft inside entrance — intercept incoming project shoppers' },
+      { id: 'z2', title: 'Lumber / Contractor Aisle', desc: 'High homeowner traffic — help locate boards, fasteners & tools' },
+      { id: 'z3', title: 'Plumbing & Filters', desc: 'Natural bridge — fittings, pipes, water heaters & filters' },
+      { id: 'z4', title: 'Hardware / Garden Transition', desc: 'High-volume racetrack crossover for weekend homeowners' }
+    ];
+
+    // =========================================================================
+    // 4. APPLICATION STATE & SAFE LOCALSTORAGE PERSISTENCE
+    // =========================================================================
+    const STORAGE_KEY = 'contest_transfer_coach_v1';
+
+    let state = {
+      activeTab: 'script',
+      repName: 'Alex',
+      storeNum: '1234',
+      deskName: 'Sarah',
+      custName: 'Dave',
+      scriptMode: 'focus', // 'focus' | 'all'
+      focusStep: 1,
+      step3Branch: 'homeowner', // 'homeowner' | 'renter'
+      objSearch: '',
+      objCategory: 'all',
+      openObjIds: { 1: true, 2: true, 3: true },
+      rhythmSecondsLeft: 600, // 10:00 countdown
+      rhythmTimerRunning: false,
+      pace: {
+        greetings: 0,
+        homeowners: 0,
+        transfers: 0
+      },
+      activeZone: 'z1',
+      paceResetConfirm: false,
+      drillIdx: 0,
+      drillChoice: null,
+      drillScore: 0,
+      drillDone: false
+    };
+
+    let rhythmInterval = null;
+    let appInitialized = false;
+
+    function loadPersistedState() {
+      try {
+        if (typeof window === 'undefined' || !window.localStorage) return;
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (!saved || typeof saved !== 'object') return;
+        if (typeof saved.repName === 'string' && saved.repName.trim()) state.repName = saved.repName;
+        if (typeof saved.storeNum === 'string' && saved.storeNum.trim()) state.storeNum = saved.storeNum;
+        if (typeof saved.deskName === 'string' && saved.deskName.trim()) state.deskName = saved.deskName;
+        if (saved.pace && typeof saved.pace === 'object') {
+          state.pace = {
+            greetings: Math.max(0, Number(saved.pace.greetings) || 0),
+            homeowners: Math.max(0, Number(saved.pace.homeowners) || 0),
+            transfers: Math.max(0, Number(saved.pace.transfers) || 0)
+          };
+        }
+        if (typeof saved.activeZone === 'string') state.activeZone = saved.activeZone;
+        if (typeof saved.rhythmSecondsLeft === 'number' && saved.rhythmSecondsLeft >= 0 && saved.rhythmSecondsLeft <= 600) {
+          state.rhythmSecondsLeft = saved.rhythmSecondsLeft;
+        }
+      } catch (e) {
+        // Ignore storage restrictions
+      }
+    }
+
+    function persistState() {
+      try {
+        if (typeof window === 'undefined' || !window.localStorage) return;
+        window.localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({
+            repName: state.repName,
+            storeNum: state.storeNum,
+            deskName: state.deskName,
+            pace: state.pace,
+            activeZone: state.activeZone,
+            rhythmSecondsLeft: state.rhythmSecondsLeft
+          })
+        );
+      } catch (e) {
+        // Ignore storage restrictions
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast-box');
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.remove('hidden');
+      clearTimeout(window._toastTimer);
+      window._toastTimer = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 2000);
+    }
+
+    // =========================================================================
+    // 5. HEADER & TAB NAVIGATION
+    // =========================================================================
+    function updateHeaderTransferPill() {
+      const pill = document.getElementById('header-transfer-pill');
+      if (!pill) return;
+      const t = state.pace.transfers;
+      pill.textContent = `Transfers: ${t} / 6`;
+      pill.classList.toggle('elite', t >= 6);
+    }
+
+    function switchTab(tabKey) {
+      state.activeTab = tabKey;
+      const keys = ['script', 'objections', 'pace', 'drill'];
+      keys.forEach((k) => {
+        const viewEl = document.getElementById(`view-${k}`);
+        const btnEl = document.getElementById(`tab-btn-${k}`);
+        if (viewEl) viewEl.classList.toggle('hidden', k !== tabKey);
+        if (btnEl) btnEl.classList.toggle('active', k === tabKey);
+      });
+      try {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } catch (e) {
+        window.scrollTo(0, 0);
+      }
+    }
+
+    // =========================================================================
+    // 6. TAB 1 RENDERING: WALK & TALK SCRIPT TELEPROMPTER
+    // =========================================================================
+    function escapeHTML(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function getTokens() {
+      const rep = escapeHTML(state.repName.trim() || 'Alex');
+      const store = escapeHTML(state.storeNum.trim() || '1234');
+      const desk = escapeHTML(state.deskName.trim() || 'Sarah');
+      const cust = escapeHTML(state.custName.trim() || 'Dave');
+      return {
+        rep: `<span class="name-token">${rep}</span>`,
+        store: `<span class="name-token">${store}</span>`,
+        desk: `<span class="name-token">${desk}</span>`,
+        cust: `<span class="name-token">${cust}</span>`
+      };
+    }
+
+    function updatePersonalization() {
+      const repEl = document.getElementById('input-rep-name');
+      const storeEl = document.getElementById('input-store-num');
+      const deskEl = document.getElementById('input-desk-name');
+      const custEl = document.getElementById('input-cust-name');
+
+      if (repEl) state.repName = repEl.value;
+      if (storeEl) state.storeNum = storeEl.value;
+      if (deskEl) state.deskName = deskEl.value;
+      if (custEl) state.custName = custEl.value;
+
+      persistState();
+      renderScriptArea();
+    }
+
+    function setScriptMode(mode) {
+      state.scriptMode = mode;
+      const fBtn = document.getElementById('btn-mode-focus');
+      const aBtn = document.getElementById('btn-mode-all');
+      if (fBtn) fBtn.classList.toggle('active', mode === 'focus');
+      if (aBtn) aBtn.classList.toggle('active', mode === 'all');
+      renderScriptArea();
+    }
+
+    function setFocusStep(stepNum) {
+      state.focusStep = Math.min(4, Math.max(1, stepNum));
+      renderScriptArea();
+    }
+
+    function setStep3Branch(branch) {
+      state.step3Branch = branch;
+      renderScriptArea();
+    }
+
+    function renderStep3BranchHTML(tokens) {
+      const isHome = state.step3Branch === 'homeowner';
+      return `
+        <div class="branch-toggle-row" role="group" aria-label="Homeowner or Renter Toggle">
+          <button
+            type="button"
+            class="branch-btn ${isHome ? 'active-home' : ''}"
+            onclick="setStep3Branch('homeowner')"
+          >
+            🏠 Homeowner
+          </button>
+          <button
+            type="button"
+            class="branch-btn ${!isHome ? 'active-rent' : ''}"
+            onclick="setStep3Branch('renter')"
+          >
+            🏢 Renter
+          </button>
+        </div>
+
+        ${
+          isHome
+            ? `<div class="branch-response home">
+                 <div style="font-size:12px; font-weight:900; text-transform:uppercase; margin-bottom:4px; color:var(--green-dark);">
+                   ✅ HOMEOWNER SELECTED — HIT SPEED DIAL WITHIN 2 SECONDS!
+                 </div>
+                 "Awesome. What's your first name? ... Perfect, ${tokens.cust}. I've got our registration desk on speed dial—I'll get you connected so they can stamp your entry real quick while you grab your items."
+                 <div style="margin-top:8px; padding-top:8px; border-top:1px dashed var(--green); font-size:14px; font-weight:800;">
+                   ⚡ ACTION CUE: Keep phone unlocked in palm with call center on speed dial—hit Call within 2 seconds of hearing "Homeowner"!
+                 </div>
+               </div>`
+            : `<div class="branch-response rent">
+                 <div style="font-size:12px; font-weight:900; text-transform:uppercase; margin-bottom:4px; color:#1D4ED8;">
+                   ℹ️ RENTER SELECTED — 5-SECOND QR HANDOFF &amp; RESET
+                 </div>
+                 "No worries at all! Just scan this QR code right here on your phone and it'll enter you in the general drawing. Have a great day with that project!"
+                 <div style="margin-top:8px; padding-top:8px; border-top:1px dashed #2563EB; font-size:14px; font-weight:800;">
+                   ⚡ ACTION CUE: Hand off at their aisle and walk back to the main entrance vector within 5 seconds.
+                 </div>
+               </div>`
+        }
+      `;
+    }
+
+    function renderScriptArea() {
+      const container = document.getElementById('script-render-area');
+      if (!container) return;
+      const tokens = getTokens();
+
+      if (state.scriptMode === 'focus') {
+        const s = SCRIPT_STEPS[state.focusStep - 1];
+
+        const stepButtons = SCRIPT_STEPS.map(
+          (item) => `
+            <button
+              type="button"
+              class="step-dot-btn ${item.step === state.focusStep ? 'active' : ''}"
+              onclick="setFocusStep(${item.step})"
+            >
+              Step ${item.step}
+            </button>
+          `
+        ).join('');
+
+        let nextActionBtn = '';
+        if (state.focusStep === 1) {
+          nextActionBtn = `
+            <button type="button" class="escalate-btn" onclick="setFocusStep(2)">
+              Walking With Customer → Step 2 (Walk &amp; Talk Drop-In)
+            </button>
+          `;
+        } else if (state.focusStep === 2) {
+          nextActionBtn = `
+            <button type="button" class="escalate-btn" onclick="setFocusStep(3)">
+              They Answered → Step 3 (Homeowner Speed-Dial / Renter QR)
+            </button>
+          `;
+        } else if (state.focusStep === 3) {
+          if (state.step3Branch === 'homeowner') {
+            nextActionBtn = `
+              <button type="button" class="escalate-btn final-call" onclick="setFocusStep(4)">
+                📞 Speed Dialing Now! → Step 4 (15-Sec Warm Handoff)
+              </button>
+            `;
+          } else {
+            nextActionBtn = `
+              <button type="button" class="escalate-btn" onclick="setFocusStep(1)">
+                🔄 QR Handed Off → Reset to Step 1 (Next Shopper)
+              </button>
+            `;
+          }
+        } else {
+          nextActionBtn = `
+            <button type="button" class="escalate-btn final-call" onclick="completeScriptTransfer()">
+              ✅ Handoff Complete! (+1 Transfer &amp; Reset for Next Shopper)
+            </button>
+          `;
+        }
+
+        container.innerHTML = `
+          <div>
+            <div class="step-dots" role="group" aria-label="Script Steps">
+              ${stepButtons}
+            </div>
+
+            <div class="card card-orange">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px; flex-wrap:wrap;">
+                <span class="badge ${state.focusStep === 4 ? 'badge-green' : 'badge-orange'}">${s.badge}</span>
+                <span style="font-size:13px; font-weight:800; color:var(--slate-600);">Step ${s.step} of 4</span>
+              </div>
+
+              <h2 style="font-size:20px; font-weight:900; margin-bottom:10px; color:var(--navy);">
+                ${s.title}
+              </h2>
+
+              <div class="action-cue-box">
+                🎬 ACTION CUE: ${s.cue}
+              </div>
+
+              ${s.hasBranch ? renderStep3BranchHTML(tokens) : s.renderHTML(tokens)}
+
+              ${nextActionBtn}
+
+              <div class="focus-nav-secondary">
+                <button
+                  type="button"
+                  class="btn-secondary"
+                  onclick="setFocusStep(${state.focusStep > 1 ? state.focusStep - 1 : 1})"
+                >
+                  ← Previous Step
+                </button>
+                <button
+                  type="button"
+                  class="btn-secondary"
+                  onclick="setFocusStep(1)"
+                >
+                  🔄 Start New Shopper
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="section-stack">
+            ${SCRIPT_STEPS.map(
+              (s) => `
+                <div class="card ${s.step === 4 ? 'card-green' : 'card-navy'}">
+                  <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px;">
+                    <span class="badge ${s.step === 4 ? 'badge-green' : 'badge-orange'}">${s.badge}</span>
+                    <button
+                      type="button"
+                      class="btn-secondary"
+                      style="padding:6px 12px; font-size:13px;"
+                      onclick="state.focusStep=${s.step}; setScriptMode('focus');"
+                    >
+                      🎯 Focus Step ${s.step}
+                    </button>
+                  </div>
+                  <h3 style="font-size:18px; font-weight:900; margin-bottom:8px;">${s.title}</h3>
+                  <div class="action-cue-box">🎬 ${s.cue}</div>
+                  ${s.hasBranch ? renderStep3BranchHTML(tokens) : s.renderHTML(tokens)}
+                </div>
+              `
+            ).join('')}
+          </div>
+        `;
+      }
+    }
+
+    function completeScriptTransfer() {
+      state.pace.transfers += 1;
+      state.rhythmSecondsLeft = 600;
+      state.focusStep = 1;
+      persistState();
+      updateHeaderTransferPill();
+      renderScriptArea();
+      renderPaceArea();
+      showToast(`📞 Transfer #${state.pace.transfers} logged! Timer reset to 10:00`);
+    }
+
+    // =========================================================================
+    // 7. TAB 2 RENDERING: OBJECTIONS & REBUTTALS (18)
+    // =========================================================================
+    function handleObjSearch(val) {
+      state.objSearch = val.trim().toLowerCase();
+      const clearBtn = document.getElementById('obj-clear-btn');
+      if (clearBtn) clearBtn.classList.toggle('hidden', state.objSearch.length === 0);
+      renderObjectionsArea();
+    }
+
+    function clearObjSearch() {
+      const inp = document.getElementById('obj-search-input');
+      if (inp) {
+        inp.value = '';
+        handleObjSearch('');
+        inp.focus();
+      }
+    }
+
+    function setObjCategory(cat) {
+      state.objCategory = cat;
+      document.querySelectorAll('.chip-btn').forEach((btn) => {
+        btn.classList.toggle('active', btn.getAttribute('data-cat') === cat);
+      });
+      renderObjectionsArea();
+    }
+
+    function toggleObjection(id) {
+      state.openObjIds[id] = !state.openObjIds[id];
+      renderObjectionsArea();
+    }
+
+    function copyRebuttal(id) {
+      const item = OBJECTIONS.find((o) => o.id === id);
+      if (!item) return;
+      const fullText = `${item.step1} ${item.step2} ${item.step3}`;
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = fullText;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast('✅ Script copied to clipboard!');
+      } catch (e) {
+        showToast('✅ Script ready to read!');
+      }
+    }
+
+    function renderObjectionsArea() {
+      const area = document.getElementById('objections-render-area');
+      if (!area) return;
+      const query = state.objSearch;
+
+      const filtered = OBJECTIONS.filter((item) => {
+        if (!query && state.objCategory !== 'all') {
+          if (!item.cats.includes(state.objCategory)) return false;
+        }
+        if (!query) return true;
+        const haystack = `${item.trigger} ${item.sub} ${item.step1} ${item.step2} ${item.step3} ${item.tip}`.toLowerCase();
+        return haystack.includes(query);
+      });
+
+      if (filtered.length === 0) {
+        area.innerHTML = `
+          <div class="card" style="text-align:center;">
+            <p style="font-size:17px; font-weight:900; margin-bottom:6px;">No matching objection found</p>
+            <p style="font-size:15px; color:var(--slate-600); margin-bottom:12px;">
+              Try keywords like: <strong>phone</strong>, <strong>QR</strong>, <strong>rush</strong>, <strong>catch</strong>, <strong>already</strong>, or <strong>Brita</strong>.
+            </p>
+            <button type="button" class="escalate-btn" style="min-height:48px;" onclick="clearObjSearch(); setObjCategory('all');">
+              Show All 18 Objections
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      area.innerHTML = filtered
+        .map((item) => {
+          const isOpen = !!state.openObjIds[item.id] || query.length > 0;
+          return `
+            <article class="obj-card ${item.priority ? 'priority-card' : ''} ${isOpen ? 'open' : ''}">
+              <button
+                type="button"
+                class="obj-header-btn"
+                onclick="toggleObjection(${item.id})"
+                aria-expanded="${isOpen}"
+              >
+                <div>
+                  <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+                    <span style="font-size:12px; font-weight:900; color:var(--slate-600);">#${item.id}</span>
+                    <span class="badge ${item.badgeClass}">${item.badgeText}</span>
+                  </div>
+                  <div class="obj-title">${item.trigger}</div>
+                  <div class="obj-sub">${item.sub}</div>
+                </div>
+                <span class="obj-chevron" aria-hidden="true">▼</span>
+              </button>
+
+              ${
+                isOpen
+                  ? `<div class="obj-body">
+                       <div class="step-box step-box-1">
+                         <div class="step-box-label">1. Acknowledge &amp; Disarm</div>
+                         <div class="step-box-text">${item.step1}</div>
+                       </div>
+
+                       <div class="step-box step-box-2">
+                         <div class="step-box-label">2. Reframe / Time Anchor</div>
+                         <div class="step-box-text">${item.step2}</div>
+                       </div>
+
+                       <div class="step-box step-box-3">
+                         <div class="step-box-label">3. Speed-Dial Pivot</div>
+                         <div class="step-box-text">${item.step3}</div>
+                       </div>
+
+                       <div class="body-tone-box">
+                         🎯 ${item.tip}
+                       </div>
+
+                       <button type="button" class="copy-script-btn" onclick="copyRebuttal(${item.id})">
+                         📋 Copy Script
+                       </button>
+                     </div>`
+                  : ''
+              }
+            </article>
+          `;
+        })
+        .join('');
+    }
+
+    // =========================================================================
+    // 8. TAB 3 RENDERING: 4–6/HR PACE & 10-MINUTE RHYTHM TIMER
+    // =========================================================================
+    function formatMMSS(totalSec) {
+      const mins = Math.floor(totalSec / 60);
+      const secs = totalSec % 60;
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function updateRhythmTimerUI() {
+      const clockEl = document.getElementById('rhythm-clock-display');
+      const elapsedEl = document.getElementById('rhythm-elapsed-display');
+      const labelEl = document.getElementById('rhythm-active-label');
+      const startBtn = document.getElementById('rhythm-start-btn');
+
+      const left = state.rhythmSecondsLeft;
+      const elapsed = 600 - left;
+
+      if (clockEl) {
+        clockEl.textContent = left === 0 ? '00:00' : formatMMSS(left);
+        clockEl.classList.toggle('urgent', left <= 120);
+      }
+
+      if (elapsedEl) {
+        const eMin = Math.floor(elapsed / 60);
+        const eSec = elapsed % 60;
+        elapsedEl.textContent = `${eMin}:${String(eSec).padStart(2, '0')} / 10:00`;
+      }
+
+      if (startBtn) {
+        startBtn.textContent = state.rhythmTimerRunning ? '⏸ Pause Timer' : '▶ Start 10:00';
+      }
+
+      // Highlight which phase of the 10-minute cycle we are in:
+      // 0:00-2:00 (0-119s) Scout, 2:00-5:00 (120-299s) Walk & Guide,
+      // 5:00-7:00 (300-419s) Speed-Dial Handoff, 7:00-10:00 (420-600s) Reset & Reposition
+      let activePhase = 1;
+      let phaseText = 'Phase 1 (0:00–2:00): Scout & Engage';
+      if (elapsed >= 420) {
+        activePhase = 4;
+        phaseText = 'Phase 4 (7:00–10:00): Reset & Reposition';
+      } else if (elapsed >= 300) {
+        activePhase = 3;
+        phaseText = 'Phase 3 (5:00–7:00): Speed-Dial Handoff';
+      } else if (elapsed >= 120) {
+        activePhase = 2;
+        phaseText = 'Phase 2 (2:00–5:00): Walk & Guide';
+      }
+
+      if (labelEl) {
+        labelEl.textContent = left === 0 ? '⏰ 10:00 Cycle Complete — Log Transfer or Reset!' : phaseText;
+      }
+
+      [1, 2, 3, 4].forEach((idx) => {
+        const pill = document.getElementById(`rhythm-pill-${idx}`);
+        if (pill) pill.classList.toggle('current', idx === activePhase);
+      });
+    }
+
+    function toggleRhythmTimer() {
+      if (state.rhythmTimerRunning) {
+        state.rhythmTimerRunning = false;
+        clearInterval(rhythmInterval);
+        updateRhythmTimerUI();
+        return;
+      }
+
+      if (state.rhythmSecondsLeft <= 0) {
+        state.rhythmSecondsLeft = 600;
+      }
+
+      state.rhythmTimerRunning = true;
+      updateRhythmTimerUI();
+      clearInterval(rhythmInterval);
+      rhythmInterval = setInterval(() => {
+        if (state.rhythmSecondsLeft > 0) {
+          state.rhythmSecondsLeft -= 1;
+          persistState();
+          updateRhythmTimerUI();
+        } else {
+          state.rhythmTimerRunning = false;
+          clearInterval(rhythmInterval);
+          updateRhythmTimerUI();
+        }
+      }, 1000);
+    }
+
+    function resetRhythmTimer() {
+      state.rhythmTimerRunning = false;
+      clearInterval(rhythmInterval);
+      state.rhythmSecondsLeft = 600;
+      persistState();
+      updateRhythmTimerUI();
+    }
+
+    function logTransferAndReset() {
+      state.pace.transfers += 1;
+      state.rhythmSecondsLeft = 600;
+      persistState();
+      updateHeaderTransferPill();
+      updateRhythmTimerUI();
+      renderPaceArea();
+      showToast(`📞 Transfer #${state.pace.transfers} logged! 10:00 clock reset!`);
+    }
+
+    function updatePace(key, delta) {
+      state.pace[key] = Math.max(0, (state.pace[key] || 0) + delta);
+      state.paceResetConfirm = false;
+      persistState();
+      updateHeaderTransferPill();
+      renderPaceArea();
+    }
+
+    function handlePaceReset() {
+      const btn = document.getElementById('pace-reset-btn');
+      if (!state.paceResetConfirm) {
+        state.paceResetConfirm = true;
+        if (btn) {
+          btn.textContent = 'Tap Again to Confirm';
+          btn.style.backgroundColor = 'var(--red)';
+          btn.style.color = 'var(--white)';
+        }
+        clearTimeout(window._paceResetTimer);
+        window._paceResetTimer = setTimeout(() => {
+          state.paceResetConfirm = false;
+          renderPaceArea();
+        }, 3200);
+        return;
+      }
+      state.pace = { greetings: 0, homeowners: 0, transfers: 0 };
+      state.paceResetConfirm = false;
+      persistState();
+      updateHeaderTransferPill();
+      renderPaceArea();
+    }
+
+    function selectZone(zoneId) {
+      state.activeZone = zoneId;
+      persistState();
+      renderPaceArea();
+    }
+
+    function renderPaceArea() {
+      const resetBtn = document.getElementById('pace-reset-btn');
+      if (resetBtn && !state.paceResetConfirm) {
+        resetBtn.textContent = 'Reset Hour';
+        resetBtn.style.backgroundColor = '';
+        resetBtn.style.color = '';
+      }
+
+      const { greetings, homeowners, transfers } = state.pace;
+      const alertBox = document.getElementById('pace-coaching-alert');
+
+      if (alertBox) {
+        if (greetings >= 8 && transfers === 0) {
+          alertBox.innerHTML = `
+            <div class="coaching-alert-red flash-red-alert" role="alert">
+              🚨 STOP CHATTING WITHOUT DIALING! Hit Speed Dial within 2 seconds of hearing Homeowner — 4 to 6 transfers/hr is mandatory!
+            </div>
+          `;
+        } else if (transfers >= 6) {
+          alertBox.innerHTML = `
+            <div class="coaching-alert-gold">
+              🏆 ELITE 6+/HR PACE! (${transfers} Live Transfers Completed — Keep Stacking!)
+            </div>
+          `;
+        } else if (transfers >= 4) {
+          alertBox.innerHTML = `
+            <div class="coaching-alert-green">
+              ✅ MINIMUM TARGET HIT — Push for 6/hr! (${transfers} of 6 Transfers Completed)
+            </div>
+          `;
+        } else {
+          const needed = 4 - transfers;
+          alertBox.innerHTML = `
+            <div style="background-color:var(--navy); color:var(--white); border-radius:12px; padding:12px 14px; font-size:15px; font-weight:800; border-left:5px solid var(--orange);">
+              Mandatory Target: <strong>4 to 6 Live Transfers / Hr</strong>. You need <strong>${needed} more transfer${needed === 1 ? '' : 's'}</strong> this hour to hit minimum standard!
+            </div>
+          `;
+        }
+      }
+
+      const defs = [
+        {
+          key: 'greetings',
+          title: 'Shoppers Greeted / Helped',
+          goal: 25,
+          goalText: 'Target: 20–30 / hr (Aisle Concierge)',
+          isMoney: false
+        },
+        {
+          key: 'homeowners',
+          title: 'Homeowners Qualified',
+          goal: 10,
+          goalText: 'Target: 8–12 / hr (First Name + Homeowner)',
+          isMoney: false
+        },
+        {
+          key: 'transfers',
+          title: 'Live Contest Transfers Completed',
+          goal: 6,
+          goalText: 'Mandatory Target: 4 to 6 / hr',
+          isMoney: true
+        }
+      ];
+
+      const countersArea = document.getElementById('pace-counters-area');
+      if (countersArea) {
+        countersArea.innerHTML = defs
+          .map((d) => {
+            const val = state.pace[d.key];
+            const pct = Math.min(100, Math.round((val / d.goal) * 100));
+            const met = d.key === 'transfers' ? val >= 4 : val >= d.goal;
+            return `
+              <div class="counter-card ${met ? 'goal-met' : ''}">
+                <div class="counter-top">
+                  <div>
+                    <div style="font-size:16px; font-weight:900; color:var(--navy);">${d.title}</div>
+                    <div style="font-size:13px; font-weight:800; color:${met ? 'var(--green-dark)' : 'var(--slate-600)'};">
+                      ${d.goalText} ${met ? '✅ ON PACE!' : ''}
+                    </div>
+                  </div>
+                  <div class="counter-num">${val}</div>
+                </div>
+                <div class="progress-track">
+                  <div class="progress-fill ${met || d.isMoney ? 'green' : ''}" style="width:${pct}%"></div>
+                </div>
+                <div class="counter-btns">
+                  <button type="button" class="btn-minus" onclick="updatePace('${d.key}', -1)" aria-label="Minus 1 ${d.title}">
+                    −1
+                  </button>
+                  <button type="button" class="btn-plus ${d.isMoney ? 'green' : ''}" onclick="updatePace('${d.key}', 1)">
+                    +1 Tap
+                  </button>
+                </div>
+              </div>
+            `;
+          })
+          .join('');
+      }
+
+      const zoneGrid = document.getElementById('zone-grid-area');
+      if (zoneGrid) {
+        zoneGrid.innerHTML = AISLE_ZONES.map(
+          (z) => `
+            <button
+              type="button"
+              class="zone-btn ${state.activeZone === z.id ? 'active' : ''}"
+              onclick="selectZone('${z.id}')"
+            >
+              <div style="font-weight:900; color:${state.activeZone === z.id ? '#FDBA74' : 'var(--navy)'};">
+                ${state.activeZone === z.id ? '📍 ' : ''}${z.title}
+              </div>
+              <div style="font-size:13px; font-weight:600; margin-top:3px; color:${state.activeZone === z.id ? '#E2E8F0' : 'var(--slate-600)'};">
+                ${z.desc}
+              </div>
+            </button>
+          `
+        ).join('');
+      }
+
+      updateRhythmTimerUI();
+    }
+
+    // =========================================================================
+    // 9. TAB 4 RENDERING: 8-ROUND SPEED-DIAL DRILL SIMULATOR
+    // =========================================================================
+    function pickDrillChoice(choiceId) {
+      if (state.drillChoice !== null) return;
+      const sc = DRILL_SCENARIOS[state.drillIdx];
+      const chosen = sc.choices.find((c) => c.id === choiceId);
+      if (!chosen) return;
+      state.drillChoice = choiceId;
+      if (chosen.correct) state.drillScore += 1;
+      renderDrillArea();
+    }
+
+    function nextDrillRound() {
+      if (state.drillIdx + 1 >= DRILL_SCENARIOS.length) {
+        state.drillDone = true;
+      } else {
+        state.drillIdx += 1;
+        state.drillChoice = null;
+      }
+      renderDrillArea();
+    }
+
+    function restartDrill() {
+      state.drillIdx = 0;
+      state.drillChoice = null;
+      state.drillScore = 0;
+      state.drillDone = false;
+      renderDrillArea();
+    }
+
+    function renderDrillArea() {
+      const pill = document.getElementById('drill-score-pill');
+      if (pill) pill.textContent = `Score: ${state.drillScore} / ${DRILL_SCENARIOS.length}`;
+
+      const area = document.getElementById('drill-render-area');
+      if (!area) return;
+
+      if (state.drillDone) {
+        const passed = state.drillScore >= 7;
+        area.innerHTML = `
+          <div style="margin-top:14px; padding:18px; border-radius:14px; background-color:${
+            passed ? 'var(--green-tint)' : 'var(--red-tint)'
+          }; border:2px solid ${passed ? 'var(--green)' : 'var(--red)'}; text-align:center;">
+            <span class="badge ${passed ? 'badge-green' : 'badge-red'}" style="margin-bottom:8px;">
+              ${passed ? '🏆 SPEED-DIAL CERTIFIED (4–6 CALLS/HR READY)' : '⚠️ NEEDS REPS — LOCK IN THE 2-SEC SPEED DIAL'}
+            </span>
+            <div style="font-size:38px; font-weight:900; color:var(--navy); margin:4px 0;">
+              ${state.drillScore} / ${DRILL_SCENARIOS.length}
+            </div>
+            <p style="font-size:16px; font-weight:800; color:var(--navy); margin-bottom:14px;">
+              ${
+                passed
+                  ? 'You mastered the Aisle Concierge opener, Zero-Data-in-Aisle rule, 2-second Speed Dial, Renter QR vs. Homeowner branching, and 15-second warm handoff!'
+                  : 'Review the Walk & Talk Script and 18 Objections, then run this 8-round drill again until you score at least 7/8.'
+              }
+            </p>
+            <button type="button" class="escalate-btn" onclick="restartDrill()">
+              🔄 Run 8-Round Speed-Dial Drill Again
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const sc = DRILL_SCENARIOS[state.drillIdx];
+      const chosenObj = state.drillChoice ? sc.choices.find((c) => c.id === state.drillChoice) : null;
+
+      area.innerHTML = `
+        <div style="margin-top:12px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap;">
+            <span class="badge badge-navy">Round ${sc.round} of ${DRILL_SCENARIOS.length}</span>
+            <span style="font-size:12px; font-weight:900; color:var(--orange);">${sc.badge}</span>
+          </div>
+
+          <div class="drill-scenario-box">
+            <div style="font-size:12px; font-weight:800; color:#94A3B8; text-transform:uppercase; margin-bottom:4px;">
+              Live Aisle Scenario:
+            </div>
+            <div style="font-size:17px; font-weight:800; line-height:1.45;">
+              ${sc.situation}
+            </div>
+          </div>
+
+          <div class="section-stack">
+            ${sc.choices
+              .map((c) => {
+                let cls = 'drill-choice-btn';
+                let icon = c.id.toUpperCase() + '. ';
+                if (chosenObj) {
+                  if (c.correct) {
+                    cls += ' correct';
+                    icon = '✅ ';
+                  } else if (c.id === chosenObj.id) {
+                    cls += ' wrong';
+                    icon = '❌ ';
+                  } else {
+                    cls += ' dimmed';
+                  }
+                }
+                return `
+                  <button
+                    type="button"
+                    class="${cls}"
+                    ${chosenObj ? 'disabled' : ''}
+                    onclick="pickDrillChoice('${c.id}')"
+                  >
+                    ${icon}${c.text}
+                  </button>
+                `;
+              })
+              .join('')}
+          </div>
+
+          ${
+            chosenObj
+              ? `<div class="feedback-box ${chosenObj.correct ? 'ok' : 'bad'}">
+                   <div style="font-size:16px; font-weight:900; margin-bottom:4px;">
+                     ${chosenObj.correct ? '✅ HITS 4–6 CALLS/HR PACE!' : '❌ SLOWS DOWN YOUR TRANSFER PACE!'}
+                   </div>
+                   <div style="margin-bottom:12px;">${chosenObj.why}</div>
+                   <button type="button" class="escalate-btn" style="min-height:50px;" onclick="nextDrillRound()">
+                     ${state.drillIdx + 1 >= DRILL_SCENARIOS.length ? 'See Certification Score 🏆' : 'Next Round →'}
+                   </button>
+                 </div>`
+              : ''
+          }
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // 10. IMMEDIATE INITIALIZATION
+    // =========================================================================
+    function initApp() {
+      if (appInitialized) return;
+      appInitialized = true;
+
+      try {
+        loadPersistedState();
+        const repInput = document.getElementById('input-rep-name');
+        const storeInput = document.getElementById('input-store-num');
+        const deskInput = document.getElementById('input-desk-name');
+        const custInput = document.getElementById('input-cust-name');
+
+        if (repInput) repInput.value = state.repName;
+        if (storeInput) storeInput.value = state.storeNum;
+        if (deskInput) deskInput.value = state.deskName;
+        if (custInput) custInput.value = state.custName;
+
+        updateHeaderTransferPill();
+        renderScriptArea();
+        renderObjectionsArea();
+        renderPaceArea();
+        renderDrillArea();
+      } catch (e) {
+        // Safe fallback
+      }
+    }
+
+    initApp();
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initApp);
+    }
+  </script>
+</body>
+</html>
+```
